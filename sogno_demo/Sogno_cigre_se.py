@@ -9,9 +9,9 @@ import paho.mqtt.client as mqtt
 import json
 import numpy as np
 import time
-import acs.state_estimation.network
-import acs.state_estimation.nv_state_estimator_cim
-import acs.state_estimation.measurement_generator_online
+from acs.state_estimation.network import System, Ymatrix_calc
+from acs.state_estimation.nv_state_estimator_cim import DsseCall
+from acs.state_estimation.measurement_generator_online import Zdata_structure_creation, Zdatameas_creation_fromPF
 import cimpy
 import mqtt_client
 
@@ -21,8 +21,8 @@ def on_message(mqttc, userdata, msg):
     values = message["data"]
 
     if message["sequence"] > 0:
-        zdatameas = measurement_generator_online.Zdatameas_creation_fromPF(meas_config, zdata, values)
-        Vest, Iest, Iinjest, S1est, S2est, Sinjest = nv_state_estimator_cim.DsseCall(system, zdatameas, Ymatr, Adj)
+        zdatameas = Zdatameas_creation_fromPF(meas_config, zdata, values)
+        Vest, Iest, Iinjest, S1est, S2est, Sinjest = DsseCall(system, zdatameas, Ymatr, Adj)
         index = np.linspace(0, len(values) - 2, int(len(values) / 2)).astype(int)
 
         payload["ts"]["origin"] = message["ts"]["origin"]
@@ -61,16 +61,16 @@ def connect_subscribe(topic):
 
 
 xml_files = [
-    r"C:\Users\acs-opal\git\cim-grid-data\CIGRE_MV\CIGRE_MV_no_tapchanger_With_LoadFlow_Results\Rootnet_FULL_NE_06J16h_EQ.xml",
-    r"C:\Users\acs-opal\git\cim-grid-data\CIGRE_MV\CIGRE_MV_no_tapchanger_With_LoadFlow_Results\Rootnet_FULL_NE_06J16h_SV.xml",
-    r"C:\Users\acs-opal\git\cim-grid-data\CIGRE_MV\CIGRE_MV_no_tapchanger_With_LoadFlow_Results\Rootnet_FULL_NE_06J16h_TP.xml"]
+    r"..\cim-grid-data\CIGRE_MV\CIGRE_MV_no_tapchanger_With_LoadFlow_Results\Rootnet_FULL_NE_06J16h_EQ.xml",
+    r"..\cim-grid-data\CIGRE_MV\CIGRE_MV_no_tapchanger_With_LoadFlow_Results\Rootnet_FULL_NE_06J16h_SV.xml",
+    r"..\cim-grid-data\CIGRE_MV\CIGRE_MV_no_tapchanger_With_LoadFlow_Results\Rootnet_FULL_NE_06J16h_TP.xml"]
 
 res = cimpy.cimread(xml_files)
 cimpy.setNodes(res)
 cimpy.setPowerTransformerEnd(res)
-system = network.System()
+system = System()
 system.load_cim_data(res)
-Ymatr, Adj = network.Ymatrix_calc(system)
+Ymatr, Adj = Ymatrix_calc(system)
 
 with open('Payload_config.json') as f1:
     payload = json.load(f1)
@@ -78,7 +78,7 @@ with open('Payload_config.json') as f1:
 with open('Measurement_config.json') as f2:
     meas_config = json.load(f2)
 
-zdata = measurement_generator_online.Zdata_structure_creation(meas_config, system)
+zdata = Zdata_structure_creation(meas_config, system)
 
 mqttc = mqtt_client.connect_subscribe("dpsim-powerflow")
 mqttc.on_message = on_message
