@@ -5,17 +5,14 @@
 # paho, mqtt library for python (sudo pip install paho-mqtt)
 import sys
 
-sys.path.append(r"C:\Users\acs-opal\git\state-estimation\acs\state_estimation")
-sys.path.append(r"C:\Users\acs-opal\git\cimpy")
-
 import paho.mqtt.client as mqtt
 import json
 import numpy as np
 import time
+import acs.state_estimation.network
+import acs.state_estimation.nv_state_estimator_cim
+import acs.state_estimation.measurement_generator_online
 import cimpy
-import network
-import nv_state_estimator_cim
-import measurement_generator_online
 import mqtt_client
 
 

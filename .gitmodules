@@ -1,0 +1,3 @@
+[submodule "state-estimation"]
+	path = state-estimation
+	url = git@git.rwth-aachen.de:acs/core/simulation/state-estimation.git
