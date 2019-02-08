@@ -4,3 +4,6 @@
 [submodule "cimpy"]
 	path = cimpy
 	url = git@git.rwth-aachen.de:acs/core/cim/cimpy.git
+[submodule "cim-grid-data"]
+	path = cim-grid-data
+	url = git@git.rwth-aachen.de:acs/core/grid-data/cim-grid-data.git
