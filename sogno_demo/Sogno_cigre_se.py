@@ -78,10 +78,12 @@ def on_message(mqttc, userdata, msg):
 
         # till here
 
-        if message["sequence"] <60:
+        if message["sequence"] < 90:
             zdatameas = Zdatameas_creation_fromPF(meas_config1, zdata1, values_se, message["sequence"])
+            scenario_flag = 1
         else:
             zdatameas = Zdatameas_creation_fromPF(meas_config2, zdata2, values_se, message["sequence"])
+            scenario_flag = 2
 
         Vest, Iest, Iinjest, S1est, S2est, Sinjest = DsseCall(system, zdatameas, Ymatr, Adj)
 
@@ -106,6 +108,7 @@ def on_message(mqttc, userdata, msg):
         payload["sequence"] = message["sequence"]
         payload["data"] = np.append(values, values)
         payload["data"] = np.append(payload["data"], [max_err, mean_err])
+        payload["data"] = np.append(payload["data"], [scenario_flag])
         payload["data"][index] = Vmag_est
         payload["data"][index + 1] = Vphase_est
         payload["data"] = list(payload["data"])
