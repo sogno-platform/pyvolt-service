@@ -57,7 +57,7 @@ mqttc.loop_start()							  #start loop to process callback
 time.sleep(1)								   #wait for connection setup to complete
 mqttc.subscribe(topic)
 
-data_file = r"C:\Users\Martin\Desktop\hiwi\git\state-estimation-client\sogno_demo\dpsim_powerflow_record_cigre.txt"
+data_file = r".\sample_data\dpsim_powerflow_record_cigre.txt"
 data = []
 with open(data_file) as json_file:
 	for line in json_file:

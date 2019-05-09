@@ -8,10 +8,5 @@ First, install dependencies
 pip install -r requirements.txt
 ```
 
-Then, install submodule as linked packages in development mode with
-
-```
-cd state-estimation
-python setup.py develop
-```
+Then, install the state estimation algorithm package itself by following [the corresponding instructions](state-estimation/README.md)
 

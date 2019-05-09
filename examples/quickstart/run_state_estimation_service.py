@@ -6,9 +6,10 @@ import numpy as np
 
 import cimpy
 from  acs.state_estimation.network import System
-from  acs.state_estimation.nv_state_estimator_cim import DsseCall
+from  acs.state_estimation.nv_state_estimator import DsseCall
 from  acs.state_estimation.measurement import Measurents_set
 from  acs.state_estimation.results import Results
+import os 
 
 logging.basicConfig(filename='recv_client.log', level=logging.INFO, filemode='w')
 
@@ -81,13 +82,15 @@ def on_message(client, userdata, msg):
 
 #grid files
 xml_files = [
-	r"..\..\..\cim-grid-data\CIGRE_MV\CIGRE_MV_no_tapchanger_With_LoadFlow_Results\Rootnet_FULL_NE_06J16h_EQ.xml",
-	r"..\..\..\cim-grid-data\CIGRE_MV\CIGRE_MV_no_tapchanger_With_LoadFlow_Results\Rootnet_FULL_NE_06J16h_SV.xml",
-	r"..\..\..\cim-grid-data\CIGRE_MV\CIGRE_MV_no_tapchanger_With_LoadFlow_Results\Rootnet_FULL_NE_06J16h_TP.xml"]
+	r"..\..\state-estimation\examples\quickstart\sample_data\Rootnet_FULL_NE_06J16h_EQ.xml",
+	r"..\..\state-estimation\examples\quickstart\sample_data\Rootnet_FULL_NE_06J16h_SV.xml",
+	r"..\..\state-estimation\examples\quickstart\sample_data\Rootnet_FULL_NE_06J16h_TP.xml"]
+
+
 
 #measurements files
-meas_configfile1 = r".\Measurement_config2.json"
-meas_configfile2 = r".\Measurement_config3.json"  
+meas_configfile1 = r".\sample_data\Measurement_config2.json"
+meas_configfile2 = r".\sample_data\Measurement_config3.json"
 
 #load grid
 Sb = 25
@@ -99,7 +102,7 @@ system.load_cim_data(res, Sb)
 powerflow_results = Results(system)
 
 #read mapping file and split each line of mapping_file by point e.g.: N0.V.mag -> ["V0", "mag"]
-mapping_file = r"..\..\..\state-estimation-client\sogno_demo\villas_sent_data.conf"
+mapping_file = r".\sample_data\villas_sent_data.conf"
 mapping = []
 with open(mapping_file) as mfile:
 	for line in mfile:
