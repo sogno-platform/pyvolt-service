@@ -1,2 +1,8 @@
 paho-mqtt==1.4.0
 numpy
+
+# state-estimation requirements
+matplotlib
+
+# cimpy
+lxml
