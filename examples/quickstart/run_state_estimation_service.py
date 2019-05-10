@@ -120,13 +120,25 @@ end = False
 topic = "dpsim-powerflow"							   
 topic_dummy_simulator = "dpsim-powerflow_results"		  
 
+'''
+# Public Message Broker
 broker_adress = "m16.cloudmqtt.com"
 mqtt.Client.connected_flag=False						#create flag in class
-mqttc = mqtt.Client("SognoDemo_Client", True)		   #create new instance
+mqttc = mqtt.Client("SognoDemo_Client", True)		   	#create new instance
 mqttc.username_pw_set("ilgtdaqk", "UbNQQjmcUdqq")
-mqttc.on_connect = on_connect						   #attach function to callback
+mqttc.on_connect = on_connect                   		#attach function to callback
+mqttc.connect(broker_adress, 14543)					 	#connect to broker
+'''
+
+# ACS Message Broker
+broker_adress = "137.226.248.91"
+mqtt.Client.connected_flag=False						#create flag in class
+mqttc = mqtt.Client("SognoDemo", True)          		#create new instance
+mqttc.username_pw_set("villas", "s3c0sim4!")
+mqttc.on_connect = on_connect                   		#attach function to callback
+mqttc.connect(broker_adress)                    		#connect to broker
+
 mqttc.on_message = on_message						   #attach function to callback
-mqttc.connect(broker_adress, 14543)					 #connect to broker
 mqttc.loop_start()									  #start loop to process callback
 time.sleep(4)										   #wait for connection setup to complete
 mqttc.subscribe(topic)
@@ -134,9 +146,6 @@ mqttc.subscribe(topic)
 while not mqttc.connected_flag:	 #wait in loop
 	print("In wait loop")
 	time.sleep(1)
-
-#send notification message notifying that the connection was successful
-mqttc.publish(topic_dummy_simulator, json.dumps("OK"))
 
 while not end:
 	time.sleep(0.01)
