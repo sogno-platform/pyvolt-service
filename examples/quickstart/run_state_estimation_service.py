@@ -67,6 +67,8 @@ def on_message(client, userdata, msg):
             print(e)
 
         # send results to message broker
+        # TODO: use former implementation as message format must be suitable for VILLASnode
+        """
         payload = {}
         payload["client"] = "Sogno_cigre_se_cim"
         payload["sequence"] = sequence
@@ -74,7 +76,6 @@ def on_message(client, userdata, msg):
         payload["V_est_phase"] = np.angle(state_estimation_res.get_voltages()).tolist()
         mqttc.publish(topic_publish, "[" + json.dumps(payload) + "]", 0)
 
-        # TODO: use former implementation as message format must be suitable for VILLASnode
         Vmag_err = np.absolute(np.subtract(Vmag_est, Vmag_true))
         Vmag_err = 100 * np.divide(Vmag_err, Vmag_true)
         max_err = np.amax(Vmag_err)
@@ -87,8 +88,11 @@ def on_message(client, userdata, msg):
         payload["data"][index] = Vmag_est
         payload["data"][index + 1] = Vphase_est
         payload["data"] = list(payload["data"])
-
         print(payload)
+        """
+
+        # Finished message
+        print("Finished state estimation for sequence " + str(sequence))
 
 
 # grid files
@@ -98,8 +102,8 @@ xml_files = [
     r"..\..\state-estimation\examples\quickstart\sample_data\Rootnet_FULL_NE_06J16h_TP.xml"]
 
 # measurements files
-meas_configfile1 = r".\sample_data\Measurement_config2.json"
-meas_configfile2 = r".\sample_data\Measurement_config3.json"
+meas_configfile1 = r"..\configs\Measurement_config2.json"
+meas_configfile2 = r"..\configs\Measurement_config3.json"
 
 # load grid
 Sb = 25
@@ -111,7 +115,7 @@ system.load_cim_data(res, Sb)
 powerflow_results = Results(system)
 
 # read mapping file and split each line of mapping_file by point e.g.: N0.V.mag -> ["V0", "mag"]
-mapping_file = r".\sample_data\villas_sent_data.conf"
+mapping_file = r"..\configs\villas_sent_data.conf"
 mapping = []
 with open(mapping_file) as mfile:
     for line in mfile:
@@ -139,7 +143,7 @@ mqttc.connect(broker_adress, 14543)					 	#connect to broker
 # ACS Message Broker
 broker_address = "137.226.248.91"
 mqtt.Client.connected_flag = False                      # create flag in class
-mqttc = mqtt.Client("SognoDemo", True)                  # create new instance
+mqttc = mqtt.Client("SognoStateEstimator", True)                  # create new instance
 mqttc.username_pw_set("villas", "s3c0sim4!")
 mqttc.on_connect = on_connect                           # attach function to callback
 mqttc.connect(broker_address)                            # connect to broker

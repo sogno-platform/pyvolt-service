@@ -5,7 +5,7 @@ import time
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-        client.connected_flag = False  # set flag
+        client.connected_flag = True  # set flag
         print("connected OK with returned code=", rc)
     else:
         print("Bad connection with returned code=", rc)
@@ -27,7 +27,7 @@ mqttc.connect(broker_adress, 14543)					 	#connect to broker
 
 # ACS Message Broker
 broker_address = "137.226.248.91"
-mqttc = mqtt.Client("SognoDemo", True)  # create new instance
+mqttc = mqtt.Client("DpsimDummy", True)  # create new instance
 mqttc.username_pw_set("villas", "s3c0sim4!")
 mqttc.on_connect = on_connect  # attach function to callback
 mqttc.connect(broker_address)  # connect to broker
