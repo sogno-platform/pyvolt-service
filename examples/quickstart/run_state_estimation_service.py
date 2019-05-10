@@ -9,7 +9,7 @@ from acs.state_estimation.network import System
 from acs.state_estimation.nv_state_estimator import DsseCall
 from acs.state_estimation.measurement import Measurents_set
 from acs.state_estimation.results import Results
-import os
+
 
 logging.basicConfig(filename='recv_client.log', level=logging.INFO, filemode='w')
 
@@ -25,62 +25,70 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    global end
-    # stop simulation when message "end" is received
-    if json.loads(msg.payload) == "end":
-        end = True
-    else:
-        message = json.loads(msg.payload)[0]
-        sequence = message['sequence']
-        data = message['data']
+    message = json.loads(msg.payload)[0]
+    sequence = message['sequence']
+    data = message['data']
 
-        if sequence > 0:
-            # store the recived data in powerflow_results
-            for node in powerflow_results.nodes:
-                magnitude = 0.0
-                phase = 0.0
-                uuid = node.topology_node.uuid
-                for elem_idx, elem_data in enumerate(mapping):
-                    if elem_data[0] == uuid:  # elem_data[0] == uuid
-                        if elem_data[1] == "mag":  # elem_data[1] = "mag" or "phase"
-                            magnitude = data[elem_idx]
-                        elif elem_data[1] == "phase":
-                            phase = data[elem_idx]
-                node.voltage = magnitude * (np.cos(phase) + 1j * np.sin(phase)) / 1000
-                node.voltage_pu = node.voltage / node.topology_node.baseVoltage
+    if sequence > 0:
+        # store the received data in powerflow_results
+        for node in powerflow_results.nodes:
+            magnitude = 0.0
+            phase = 0.0
+            uuid = node.topology_node.uuid
+            for elem_idx, elem_data in enumerate(mapping):
+                if elem_data[0] == uuid:  # elem_data[0] == uuid
+                    if elem_data[1] == "mag":  # elem_data[1] = "mag" or "phase"
+                        magnitude = data[elem_idx]
+                    elif elem_data[1] == "phase":
+                        phase = data[elem_idx]
+            node.voltage = magnitude * (np.cos(phase) + 1j * np.sin(phase)) / 1000
+            node.voltage_pu = node.voltage / node.topology_node.baseVoltage
 
-            # calculate quantities I, Iinj, S and Sinj
-            powerflow_results.calculate_all()
+        # calculate quantities I, Iinj, S and Sinj
+        powerflow_results.calculate_all()
 
-            # read measurements from file
-            measurements_set = Measurents_set()
-            try:
-                if sequence < 90:
-                    measurements_set.read_measurements_from_file(powerflow_results, meas_configfile1)
-                else:
-                    measurements_set.read_measurements_from_file(powerflow_results, meas_configfile2)
-            except Exception as e:
-                print(e)
-            # print(measurements_set.getMeasValues())
+        # read measurements from file
+        measurements_set = Measurents_set()
+        try:
+            if sequence < 90:
+                measurements_set.read_measurements_from_file(powerflow_results, meas_configfile1)
+            else:
+                measurements_set.read_measurements_from_file(powerflow_results, meas_configfile2)
+        except Exception as e:
+            print(e)
+        # print(measurements_set.getMeasValues())
 
-            try:
-                # calculate the measured values (affected by uncertainty)
-                measurements_set.meas_creation(dist="uniform", seed=sequence)
-                # Performs state estimation
-                state_estimation_res = DsseCall(system, measurements_set)
-                print("state_estimation_res finish!")
-            except Exception as e:
-                print(e)
+        try:
+            # calculate the measured values (affected by uncertainty)
+            measurements_set.meas_creation(dist="uniform", seed=sequence)
+            # Performs state estimation
+            state_estimation_res = DsseCall(system, measurements_set)
+        except Exception as e:
+            print(e)
 
-            # send results to dummy_simulator
-            payload = {}
-            payload["client"] = "Sogno_cigre_se_cim"
-            payload["sequence"] = sequence
-            payload["V_est_mag"] = np.absolute(state_estimation_res.get_voltages()).tolist()
-            payload["V_est_phase"] = np.angle(state_estimation_res.get_voltages()).tolist()
+        # send results to message broker
+        payload = {}
+        payload["client"] = "Sogno_cigre_se_cim"
+        payload["sequence"] = sequence
+        payload["V_est_mag"] = np.absolute(state_estimation_res.get_voltages()).tolist()
+        payload["V_est_phase"] = np.angle(state_estimation_res.get_voltages()).tolist()
+        mqttc.publish(topic_publish, "[" + json.dumps(payload) + "]", 0)
 
-            # print(payload)
-            mqttc.publish(topic_dummy_simulator, "[" + json.dumps(payload) + "]", 0)
+        # TODO: use former implementation as message format must be suitable for VILLASnode
+        Vmag_err = np.absolute(np.subtract(Vmag_est, Vmag_true))
+        Vmag_err = 100 * np.divide(Vmag_err, Vmag_true)
+        max_err = np.amax(Vmag_err)
+        mean_err = np.mean(Vmag_err)
+        payload["ts"]["origin"] = message["ts"]["origin"]
+        payload["sequence"] = message["sequence"]
+        payload["data"] = np.append(values, values)
+        payload["data"] = np.append(payload["data"], [max_err, mean_err])
+        payload["data"] = np.append(payload["data"], [scenario_flag])
+        payload["data"][index] = Vmag_est
+        payload["data"][index + 1] = Vphase_est
+        payload["data"] = list(payload["data"])
+
+        print(payload)
 
 
 # grid files
@@ -114,12 +122,9 @@ for num, elem in enumerate(mapping):
     mapping[num][0] = uuid
     mapping[num][1] = type
 
-# global variable used in callback on_message
-end = False
-
 ##topic names
-topic = "dpsim-powerflow"
-topic_dummy_simulator = "dpsim-powerflow_results"
+topic_subscribe = "dpsim-powerflow"
+topic_publish = "sogno-estimator"
 
 '''
 # Public Message Broker
@@ -132,24 +137,19 @@ mqttc.connect(broker_adress, 14543)					 	#connect to broker
 '''
 
 # ACS Message Broker
-broker_adress = "137.226.248.91"
-mqtt.Client.connected_flag = False  # create flag in class
-mqttc = mqtt.Client("SognoDemo", True)  # create new instance
+broker_address = "137.226.248.91"
+mqtt.Client.connected_flag = False                      # create flag in class
+mqttc = mqtt.Client("SognoDemo", True)                  # create new instance
 mqttc.username_pw_set("villas", "s3c0sim4!")
-mqttc.on_connect = on_connect  # attach function to callback
-mqttc.connect(broker_adress)  # connect to broker
+mqttc.on_connect = on_connect                           # attach function to callback
+mqttc.connect(broker_address)                            # connect to broker
 
-mqttc.on_message = on_message  # attach function to callback
-mqttc.loop_start()  # start loop to process callback
-time.sleep(4)  # wait for connection setup to complete
-mqttc.subscribe(topic)
+mqttc.on_message = on_message                           # attach function to callback
+mqttc.loop_start()                                      # start loop to process callback
+time.sleep(4)                                           # wait for connection setup to complete
+mqttc.subscribe(topic_subscribe)
 
-while not mqttc.connected_flag:  # wait in loop
-    print("In wait loop")
-    time.sleep(1)
-
-while not end:
-    time.sleep(0.01)
+input("Press enter to stop client...")
 
 mqttc.loop_stop()  # Stop loop
 mqttc.disconnect()  # disconnect
