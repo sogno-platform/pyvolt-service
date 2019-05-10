@@ -1,0 +1,178 @@
+{
+    "version": "1.0",
+    "type": "se_result",
+    "nodes": [
+        {
+            "node_id": "123456",
+            "values": [
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "voltage_magnitude",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "b",
+                    "measurand": "voltage_magnitude",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "c",
+                    "measurand": "voltage_magnitude",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "voltage_angle",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "b",
+                    "measurand": "voltage_angle",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "c",
+                    "measurand": "voltage_angle",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "current_magnitude",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "b",
+                    "measurand": "current_magnitude",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "c",
+                    "measurand": "current_magnitude",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "n",
+                    "measurand": "current_magnitude",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "current_angle",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "b",
+                    "measurand": "current_angle",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "c",
+                    "measurand": "current_angle",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "n",
+                    "measurand": "current_angle",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "active_power",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "b",
+                    "measurand": "active_power",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "c",
+                    "measurand": "active_power",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "reactive_power",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "b",
+                    "measurand": "reactive_power",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "c",
+                    "measurand": "reactive_power",
+                    "data": 123
+                }
+            ]
+        }
+    ],
+    "lines": [
+        {
+            "line_id": "123456",
+            "values": [
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "active_power",
+                    "position": "start_node **OR** end_node",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "active_power",
+                    "position": "end_node",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "reactive_power",
+                    "position": "start_node",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "reactive_power",
+                    "position": "end_node",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "branch_current_magnitude",
+                    "data": 123
+                },
+                {
+                    "timestamp": "2019-04-08T08:44:01",
+                    "phase": "a",
+                    "measurand": "branch_current_angle",
+                    "data": 123
+                }
+            ]
+        }
+    ]
+}
