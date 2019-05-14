@@ -115,7 +115,7 @@ system.load_cim_data(res, Sb)
 powerflow_results = Results(system)
 
 # read mapping file and split each line of mapping_file by point e.g.: N0.V.mag -> ["V0", "mag"]
-mapping_file = r"..\configs\villas_sent_data.conf"
+mapping_file = r"..\configs\villas_node_input_data.conf"
 mapping = []
 with open(mapping_file) as mfile:
     for line in mfile:
