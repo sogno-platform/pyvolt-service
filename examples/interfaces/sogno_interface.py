@@ -1,6 +1,29 @@
 from json import dumps, loads
+from datetime import datetime, timedelta
+
 import numpy as np
 from acs.state_estimation.results import Results
+
+def read_mapping_file(mapping_file):
+	"""
+	Create a list which contains the order in which the data must be received/sent from/to VillasNode.
+	This mapping is readed from the files villas_node_input_data/villas_node_output_data
+	
+	@param mapping_file: received message  from the server (json.loads(msg.payload)[0])
+	@return mapping: 
+		- if input is villas_node_input_data  --> each element of mapping is a list of length 3: [id, "V", "mag" or "phase"]
+		- if input is villas_node_output_data --> each element of mapping is a list of length 4: [id, "V", "mag" or "phase", "pf" or "est"]
+		* if id = "max_err" or "mean_err" or "scenario_flag" --> this element has the length 1: ["max_err" or "mean_err" or "scenario_flag"]
+	"""
+	lines = []
+	with open(mapping_file) as mfile:
+		for line in mfile:
+			lines.append(line.strip('\n'))
+	mapping = [None] * len(lines)
+	for pos, elem in enumerate(lines):	
+		mapping[pos] = elem.split(".")
+		
+	return mapping
 
 def receiveSognoInput(system, message, input_mapping_vector):
 	"""
@@ -11,9 +34,7 @@ def receiveSognoInput(system, message, input_mapping_vector):
 	@param input_mapping_vector: according to villas_node_input.json ((result of read_mapping_file))
 	@return powerflow_results: object type acs.state_estimation.results.Results
 	"""
-	message = loads(message)
 	data = message['readings']
-	#print(data)
 
 	#create a results object to store the received data
 	powerflow_results = Results(system)
@@ -39,53 +60,54 @@ def receiveSognoInput(system, message, input_mapping_vector):
 	
 	return powerflow_results
 
-# receiveVillasNodeInput()
-# - according to villas_node_input.json
-# - for this, read villas_node_input_data.conf
-
 def sendSognoOutput(message, output_mapping_vector, 
-		powerflow_results, state_estimation_results, scenario_flag,
+		state_estimation_results, scenario_flag,
 		version="1.0", type = "se_result"):
 	"""
-	to create the payload
+	to create the payload according to "sogno_output.json"
 	
 	@param message: received message from the server (json.loads(msg.payload)[0])
 	@param output_mapping_vector: according to villas_node_output.json (result of read_mapping_file)
-	@param powerflow_results: results of powerflow (type acs.state_estimation.results.Results)
 	@param state_estimation_results: results of state_estimation (type acs.state_estimation.results.Results)
 	@param scenario_flag:
+	@param version:
+	@param type:
 	@return payload: a string with the data to send to the server according to the output mapping file 
 	"""
 	
-	payload = {}
-	payload["version"] = version
-	payload["type"] = type
-	payload["nodes"] = []
+	SognoOutput = {}
+	SognoOutput["version"] = version
+	SognoOutput["type"] = type
+	SognoOutput["nodes"] = []
 	
-	for node in state_estimation_results.results:
+	timestamp_villas = message["ts"]["origin"][0]
+	timestamp_sogno = datetime(1970,1,1,0,0,0) + timedelta(seconds=timestamp_villas)
+	#timestamp_sogno = datetime.now()
+	timestamp_sogno = timestamp_sogno.strftime("%Y-%m-%dT%H:%M:%S")
+
+	for node in state_estimation_results.nodes:
 		node_id = node.topology_node.uuid
-		#timestamp = message["ts"]["origin"]
 		values = []
 		
 		values.append({
 			#"timestamp": timestamp,
-			"timestamp": "2019-04-08T08:44:01",
+			"timestamp": timestamp_sogno,
 			"phase": "a",
 			"measurand": "voltage_magnitude",
 			"data": np.absolute(node.voltage)
 		})
 		values.append({
 			#"timestamp": timestamp,
-			"timestamp": "2019-04-08T08:44:01",
+			"timestamp": timestamp_sogno,
 			"phase": "a",
 			"measurand": "voltage_angle",
 			"data": np.angle(node.voltage)
 		})
 		vnode = {"node_id": node_id,
 				 "values": values}
-		payload["nodes"].append(vnode)
+		SognoOutput["nodes"].append(vnode)
 		
-	return dumps(payload)
+	return dumps(SognoOutput)
 
 	
 def serviceCalculations():
