@@ -97,7 +97,7 @@ def sendVillasNodeOutput(message, output_mapping_vector, powerflow_results, stat
 			data[idx] = mean_err
 			continue
 		elif elem[0] == "scenario_flag":
-			data[idx] = scenario_flag
+			data[idx] = float(scenario_flag)
 			continue
 		else:	#elem = ["N4", "V", "phase", "est"] or elem = ["N4", "V", "phase", "pf"]
 			node = None
