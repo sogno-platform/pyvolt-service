@@ -10,6 +10,10 @@ from acs.state_estimation.nv_state_estimator import DsseCall
 from acs.state_estimation.measurement import Measurents_set
 
 import sys
+import os
+
+os.chdir(os.path.dirname(__file__))
+
 sys.path.append("..")
 from interfaces import villas_node_interface
 
@@ -104,18 +108,18 @@ topic_subscribe = "dpsim-powerflow"
 topic_publish = "sogno-estimator"
 
 # Public Message Broker
+"""
 broker_address = "m16.cloudmqtt.com"
 mqtt_username = "ilgtdaqk"
 mqtt_password = "UbNQQjmcUdqq"
 port = 14543
-
 """
+
 # ACS Message Broker
 broker_address = "137.226.248.91"
 mqtt_username = "villas"
 mqtt_password = "s3c0sim4!"
 port = 1883
-"""
 
 mqttc = connect(client_name, mqtt_username, mqtt_password, broker_address, port)
 

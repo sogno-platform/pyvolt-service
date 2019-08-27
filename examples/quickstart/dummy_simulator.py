@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import time
+import os 
 
 def connect(client_name, username, password, broker_adress, port=1883):
 	mqttc = mqtt.Client(client_name, True)		   	
@@ -28,17 +29,20 @@ client_name = "DpsimDummy"
 topic_publish = "dpsim-powerflow"
 
 # Public Message Broker
+"""
 broker_address = "m16.cloudmqtt.com"
 mqtt_username = "ilgtdaqk"
 mqtt_password = "UbNQQjmcUdqq"
 port = 14543
-
 """
+
 # ACS Message Broker
 broker_address = "137.226.248.91"
 mqtt_username = "villas"
 mqtt_password = "s3c0sim4!"
-"""
+port = 1883
+
+os.chdir(os.path.dirname(__file__))
 
 mqttc = connect(client_name, mqtt_username, mqtt_password, broker_address, port)
 
