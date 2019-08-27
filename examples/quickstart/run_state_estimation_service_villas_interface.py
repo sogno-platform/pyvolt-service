@@ -71,7 +71,7 @@ def on_message(client, userdata, msg):
 
 			#send results to message broker
 			villasOutput = villas_node_interface.sendVillasNodeOutput(message, output_mapping_vector, powerflow_results, state_estimation_results, scenario_flag)
-			mqttc.publish(villasOutput, 0)
+			mqttc.publish(topic_publish, villasOutput, 0)
 			
 			# Finished message
 			print("Finished state estimation for sequence " + str(sequence))
