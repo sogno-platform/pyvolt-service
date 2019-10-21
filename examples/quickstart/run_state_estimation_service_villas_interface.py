@@ -72,7 +72,7 @@ def on_message(client, userdata, msg):
 
 			#send results to message broker
 			villasOutput = villas_node_interface.sendVillasNodeOutput(message, output_mapping_vector, powerflow_results, state_estimation_results, scenario_flag)
-			mqttc.publish(topic_publish, villasOutput, 0)
+			client.publish(topic_publish, villasOutput, 0)
 			
 			# Finished message
 			print("Finished state estimation for sequence " + str(sequence))
@@ -106,9 +106,9 @@ res = cimpy.cimread(xml_files)
 system = System()
 system.load_cim_data(res, Sb)
 
-client_name = "SognoDemo_Client"
-topic_subscribe = "dpsim-powerflow"
-topic_publish = "sogno-estimator"
+client_name = "SognoDemo_ClientSETesting"
+topic_subscribe = "dpsim-powerflow-setesting"
+topic_publish = "sogno-estimator-setesting"
 
 # Public Message Broker
 """
