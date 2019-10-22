@@ -15,7 +15,7 @@ from os.path import abspath, dirname, join
 
 chdir(dirname(__file__))
 
-sys.path.append("..\..")
+sys.path.append("..")
 from interfaces import villas_node_interface
 
 logging.basicConfig(filename='recv_client.log', level=logging.INFO, filemode='w')
@@ -86,17 +86,17 @@ cwd=getcwd()
 
 #grid files
 xml_files = [
-	abspath(join(cwd, r"../../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_EQ.xml")),
-	abspath(join(cwd, r"../../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_SV.xml")),
-	abspath(join(cwd, r"../../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_TP.xml"))]
+	abspath(join(cwd, r"../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_EQ.xml")),
+	abspath(join(cwd, r"../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_SV.xml")),
+	abspath(join(cwd, r"../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_TP.xml"))]
 
 #measurements files
-meas_configfile1 = abspath(join(cwd, r"../configs/Measurement_config2.json"))
-meas_configfile2 = abspath(join(cwd, r"../configs/Measurement_config3.json"))
+meas_configfile1 = abspath(join(cwd, r"./configs/Measurement_config2.json"))
+meas_configfile2 = abspath(join(cwd, r"./configs/Measurement_config3.json"))
 
 #read mapping file and create mapping vectors
-input_mapping_file = abspath(join(cwd, r"../configs/villas_node_input_data.conf"))
-output_mapping_file = abspath(join(cwd, r"../configs/villas_node_output_data.conf"))
+input_mapping_file = abspath(join(cwd, r"./configs/villas_node_input_data.conf"))
+output_mapping_file = abspath(join(cwd, r"./configs/villas_node_output_data.conf"))
 input_mapping_vector = villas_node_interface.read_mapping_file(input_mapping_file)
 output_mapping_vector = villas_node_interface.read_mapping_file(output_mapping_file)
 
@@ -119,7 +119,7 @@ port = 14543
 """
 
 # ACS Message Broker
-broker_address = "sogno-broker"
+broker_address = "127.0.0.1"
 mqtt_username = "sogno_user"
 mqtt_password = "sogno_pass"
 port = 1883

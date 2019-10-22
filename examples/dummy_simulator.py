@@ -43,7 +43,7 @@ port = 14543
 """
 
 # ACS Message Broker
-broker_address = "platform-broker"
+broker_address = "127.0.0.1"
 mqtt_username = "sogno_user"
 mqtt_password = "sogno_pass"
 port = 1883
