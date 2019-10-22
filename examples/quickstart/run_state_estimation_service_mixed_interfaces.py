@@ -10,7 +10,12 @@ from acs.state_estimation.nv_state_estimator import DsseCall
 from acs.state_estimation.measurement import Measurents_set
 
 import sys
-sys.path.append("..")
+from os import chdir, getcwd
+from os.path import abspath, dirname, join
+
+chdir(dirname(__file__))
+
+sys.path.append("..\..")
 from interfaces import villas_node_interface
 from interfaces import sogno_interface
 

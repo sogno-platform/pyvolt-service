@@ -15,7 +15,7 @@ from os.path import abspath, dirname, join
 
 chdir(dirname(__file__))
 
-sys.path.append("..")
+sys.path.append("..\..")
 from interfaces import villas_node_interface
 
 logging.basicConfig(filename='recv_client.log', level=logging.INFO, filemode='w')
@@ -106,9 +106,9 @@ res = cimpy.cimread(xml_files)
 system = System()
 system.load_cim_data(res, Sb)
 
-client_name = "SognoDemo_ClientSETesting"
-topic_subscribe = "dpsim-powerflow-setesting"
-topic_publish = "sogno-estimator-setesting"
+client_name = "SognoDemo_Client"
+topic_subscribe = "dpsim-powerflow"
+topic_publish = "sogno-estimator"
 
 # Public Message Broker
 """
