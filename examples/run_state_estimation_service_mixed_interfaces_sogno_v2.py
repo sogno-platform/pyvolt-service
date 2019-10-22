@@ -74,14 +74,12 @@ def on_message(client, userdata, msg):
 			state_estimation_results = DsseCall(system, measurements_set)
 
 			#send results to message broker
-			SognoOutput = sogno_interface_v2.sendSognoOutput(message, output_mapping_vector, state_estimation_results, scenario_flag)
+			sogno_interface_v2.sendSognoOutput(client, topic_publish, state_estimation_results)
 			#villasOutput = villas_node_interface.convertSognoOutputToVillasNodeOutput(SognoOutput, output_mapping_vector)
 			#parsed = loads(SognoOutput)
 			#print()
 			#print("--------------------------")
 			#print(dumps(parsed, indent=4))
-			
-			client.publish(topic_publish, SognoOutput, 0)
 			
 			# Finished message
 			print("Finished state estimation for sequence " + str(sequence))

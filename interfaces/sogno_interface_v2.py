@@ -60,54 +60,35 @@ def receiveSognoInput(system, message, input_mapping_vector):
 	
 	return powerflow_results
 
-def sendSognoOutput(message, output_mapping_vector, 
-		state_estimation_results, scenario_flag,
-		version="1.0", type = "se_result"):
+def sendSognoOutput(client, topic_publish, state_estimation_results):
 	"""
 	to create the payload according to "sogno_output.json"
-	
-	@param message: received message from the server (json.loads(msg.payload)[0])
-	@param output_mapping_vector: according to villas_node_output.json (result of read_mapping_file)
+	@param client: MQTT client instance to be used for publishing
+	@param topic_publish: topic used for publishing
 	@param state_estimation_results: results of state_estimation (type acs.state_estimation.results.Results)
-	@param scenario_flag:
-	@param version:
-	@param type:
-	@return payload: a string with the data to send to the server according to the output mapping file 
 	"""
 	
-	SognoOutput = {}
-	SognoOutput["version"] = version
-	SognoOutput["type"] = type
-	SognoOutput["nodes"] = []
-	
-	timestamp_villas = message["ts"]["origin"][0]
-	timestamp_sogno = datetime(1970,1,1,0,0,0) + timedelta(seconds=timestamp_villas)
-	#timestamp_sogno = datetime.now()
+	# use timestamp from dpsim
+	timestamp_sogno = datetime.now()	
 	timestamp_sogno = timestamp_sogno.strftime("%Y-%m-%dT%H:%M:%S")
 
+	# publish node results
 	for node in state_estimation_results.nodes:
 		node_id = node.topology_node.uuid
-		values = []
-		
-		values.append({
-			#"timestamp": timestamp,
-			"timestamp": timestamp_sogno,
-			"phase": "a",
-			"measurand": "voltage_magnitude",
-			"data": np.absolute(node.voltage)
-		})
-		values.append({
-			#"timestamp": timestamp,
-			"timestamp": timestamp_sogno,
-			"phase": "a",
-			"measurand": "voltage_angle",
-			"data": np.angle(node.voltage)
-		})
-		vnode = {"node_id": node_id,
-				 "values": values}
-		SognoOutput["nodes"].append(vnode)
-		
-	return dumps(SognoOutput)
+
+		SognoOutput = {}
+		SognoOutput["comp_id"] = node_id
+		SognoOutput["timestamp"] = timestamp_sogno
+
+		# publish node voltage magnitude
+		SognoOutput["data"] = np.absolute(node.voltage)
+		SognoOutput["type"] = "volt_phsa_abs"
+		client.publish(topic_publish, dumps(SognoOutput), 0)
+
+		# publish node voltage angle
+		SognoOutput["data"] = np.angle(node.voltage)
+		SognoOutput["type"] = "volt_phsa_angle"
+		client.publish(topic_publish, dumps(SognoOutput), 0)
 
 	
 def serviceCalculations():
