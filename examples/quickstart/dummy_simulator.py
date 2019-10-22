@@ -37,16 +37,17 @@ port = 14543
 """
 
 # ACS Message Broker
-broker_address = "137.226.248.91"
-mqtt_username = "villas"
-mqtt_password = "s3c0sim4!"
+broker_address = "platform-broker"
+mqtt_username = "sogno_user"
+mqtt_password = "sogno_pass"
 port = 1883
 
 os.chdir(os.path.dirname(__file__))
+print(os.getcwd())
 
 mqttc = connect(client_name, mqtt_username, mqtt_password, broker_address, port)
 
-data_file = r".\sample_data\dpsim_powerflow_record_cigre.txt"
+data_file = r"./sample_data/dpsim_powerflow_record_cigre.txt"
 data = []
 with open(data_file) as json_file:
 	for line in json_file:
