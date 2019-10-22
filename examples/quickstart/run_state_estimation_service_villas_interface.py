@@ -10,9 +10,10 @@ from acs.state_estimation.nv_state_estimator import DsseCall
 from acs.state_estimation.measurement import Measurents_set
 
 import sys
-import os
+from os import chdir, getcwd
+from os.path import abspath, dirname, join
 
-os.chdir(os.path.dirname(__file__))
+chdir(dirname(__file__))
 
 sys.path.append("..")
 from interfaces import villas_node_interface
@@ -71,7 +72,7 @@ def on_message(client, userdata, msg):
 
 			#send results to message broker
 			villasOutput = villas_node_interface.sendVillasNodeOutput(message, output_mapping_vector, powerflow_results, state_estimation_results, scenario_flag)
-			mqttc.publish(topic_publish, villasOutput, 0)
+			client.publish(topic_publish, villasOutput, 0)
 			
 			# Finished message
 			print("Finished state estimation for sequence " + str(sequence))
@@ -80,20 +81,22 @@ def on_message(client, userdata, msg):
 			print(e)
 			traceback.print_tb(e.__traceback__)
 			sys.exit()
-		
+
+cwd=getcwd()
+
 #grid files
 xml_files = [
-	r"..\..\state-estimation\examples\quickstart\sample_data\Rootnet_FULL_NE_06J16h_EQ.xml",
-	r"..\..\state-estimation\examples\quickstart\sample_data\Rootnet_FULL_NE_06J16h_SV.xml",
-	r"..\..\state-estimation\examples\quickstart\sample_data\Rootnet_FULL_NE_06J16h_TP.xml"]
+	abspath(join(cwd, r"../../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_EQ.xml")),
+	abspath(join(cwd, r"../../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_SV.xml")),
+	abspath(join(cwd, r"../../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_TP.xml"))]
 
 #measurements files
-meas_configfile1 = r"..\configs\Measurement_config2.json"
-meas_configfile2 = r"..\configs\Measurement_config3.json"
+meas_configfile1 = abspath(join(cwd, r"../configs/Measurement_config2.json"))
+meas_configfile2 = abspath(join(cwd, r"../configs/Measurement_config3.json"))
 
 #read mapping file and create mapping vectors
-input_mapping_file = r"..\configs\villas_node_input_data.conf"
-output_mapping_file = r"..\configs\villas_node_output_data.conf"
+input_mapping_file = abspath(join(cwd, r"../configs/villas_node_input_data.conf"))
+output_mapping_file = abspath(join(cwd, r"../configs/villas_node_output_data.conf"))
 input_mapping_vector = villas_node_interface.read_mapping_file(input_mapping_file)
 output_mapping_vector = villas_node_interface.read_mapping_file(output_mapping_file)
 
@@ -103,9 +106,9 @@ res = cimpy.cimread(xml_files)
 system = System()
 system.load_cim_data(res, Sb)
 
-client_name = "SognoDemo_Client"
-topic_subscribe = "dpsim-powerflow"
-topic_publish = "sogno-estimator"
+client_name = "SognoDemo_ClientSETesting"
+topic_subscribe = "dpsim-powerflow-setesting"
+topic_publish = "sogno-estimator-setesting"
 
 # Public Message Broker
 """
