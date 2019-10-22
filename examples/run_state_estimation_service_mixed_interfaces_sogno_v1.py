@@ -15,9 +15,9 @@ from os.path import abspath, dirname, join
 
 chdir(dirname(__file__))
 
-sys.path.append("..\..")
+sys.path.append("..")
 from interfaces import villas_node_interface
-from interfaces import sogno_interface
+from interfaces import sogno_interface_v1
 
 logging.basicConfig(filename='recv_client.log', level=logging.INFO, filemode='w')
 
@@ -56,7 +56,7 @@ def on_message(client, userdata, msg):
 			SognoInput = villas_node_interface.convertVillasNodeInputToSognoInput(message, input_mapping_vector)
 			
 			#store the received data in powerflow_results
-			powerflow_results = sogno_interface.receiveSognoInput(system, SognoInput, input_mapping_vector)
+			powerflow_results = sogno_interface_v1.receiveSognoInput(system, SognoInput, input_mapping_vector)
 						
 			#read measurements from file
 			measurements_set = Measurents_set()
@@ -74,14 +74,14 @@ def on_message(client, userdata, msg):
 			state_estimation_results = DsseCall(system, measurements_set)
 
 			#send results to message broker
-			SognoOutput = sogno_interface.sendSognoOutput(message, output_mapping_vector, state_estimation_results, scenario_flag)
-			villasOutput = villas_node_interface.convertSognoOutputToVillasNodeOutput(SognoOutput, output_mapping_vector)
+			SognoOutput = sogno_interface_v1.sendSognoOutput(message, output_mapping_vector, state_estimation_results, scenario_flag)
+			#villasOutput = villas_node_interface.convertSognoOutputToVillasNodeOutput(SognoOutput, output_mapping_vector)
 			#parsed = loads(SognoOutput)
 			#print()
 			#print("--------------------------")
 			#print(dumps(parsed, indent=4))
 			
-			mqttc.publish(villasOutput, 0)
+			client.publish(topic_publish, SognoOutput, 0)
 			
 			# Finished message
 			print("Finished state estimation for sequence " + str(sequence))
@@ -91,21 +91,23 @@ def on_message(client, userdata, msg):
 			traceback.print_tb(e.__traceback__)
 			sys.exit()
 		
+cwd=getcwd()
+
 #grid files
 xml_files = [
-	r"..\..\state-estimation\examples\quickstart\sample_data\Rootnet_FULL_NE_06J16h_EQ.xml",
-	r"..\..\state-estimation\examples\quickstart\sample_data\Rootnet_FULL_NE_06J16h_SV.xml",
-	r"..\..\state-estimation\examples\quickstart\sample_data\Rootnet_FULL_NE_06J16h_TP.xml"]
+	abspath(join(cwd, r"../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_EQ.xml")),
+	abspath(join(cwd, r"../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_SV.xml")),
+	abspath(join(cwd, r"../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_TP.xml"))]
 
 #measurements files
-meas_configfile1 = r"..\configs\Measurement_config2.json"
-meas_configfile2 = r"..\configs\Measurement_config3.json"
+meas_configfile1 = abspath(join(cwd, r"./configs/Measurement_config2.json"))
+meas_configfile2 = abspath(join(cwd, r"./configs/Measurement_config3.json"))
 
 #read mapping file and create mapping vectors
-input_mapping_file = r"..\configs\villas_node_input_data.conf"
-output_mapping_file = r"..\configs\villas_node_output_data.conf"
-input_mapping_vector = sogno_interface.read_mapping_file(input_mapping_file)
-output_mapping_vector = sogno_interface.read_mapping_file(output_mapping_file)
+input_mapping_file = abspath(join(cwd, r"./configs/villas_node_input_data.conf"))
+output_mapping_file = abspath(join(cwd, r"./configs/villas_node_output_data.conf"))
+input_mapping_vector = sogno_interface_v1.read_mapping_file(input_mapping_file)
+output_mapping_vector = sogno_interface_v1.read_mapping_file(output_mapping_file)
 
 #load grid
 Sb = 25
@@ -117,19 +119,25 @@ client_name = "SognoDemo_Client"
 topic_subscribe = "dpsim-powerflow"
 topic_publish = "sogno-estimator"
 
+"""
 # Public Message Broker
 broker_address = "m16.cloudmqtt.com"
 mqtt_username = "ilgtdaqk"
 mqtt_password = "UbNQQjmcUdqq"
 port = 14543
 
-"""
 # ACS Message Broker
 broker_address = "137.226.248.91"
 mqtt_username = "villas"
 mqtt_password = "s3c0sim4!"
 port = 1883
 """
+
+# Local SOGNO platform broker
+broker_address = "127.0.0.1"
+mqtt_username = "sogno_user"
+mqtt_password = "sogno_pass"
+port = 1883
 
 mqttc = connect(client_name, mqtt_username, mqtt_password, broker_address, port)
 

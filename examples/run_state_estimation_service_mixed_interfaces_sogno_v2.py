@@ -2,7 +2,7 @@ import time
 import logging
 import paho.mqtt.client as mqtt
 import traceback
-from json import loads
+from json import loads, dumps
 
 import cimpy
 from acs.state_estimation.network import System
@@ -17,6 +17,7 @@ chdir(dirname(__file__))
 
 sys.path.append("..")
 from interfaces import villas_node_interface
+from interfaces import sogno_interface_v2
 
 logging.basicConfig(filename='recv_client.log', level=logging.INFO, filemode='w')
 
@@ -46,15 +47,17 @@ def on_message(client, userdata, msg):
 	"""
 	The callback for when a PUBLISH message is received from the server
 	"""
-
 	message = loads(msg.payload)[0]
 	sequence = message['sequence']
-	
+		
 	if sequence > 0:
 		try:
+			#convert villas input to sogno input
+			SognoInput = villas_node_interface.convertVillasNodeInputToSognoInput(message, input_mapping_vector)
+			
 			#store the received data in powerflow_results
-			powerflow_results = villas_node_interface.receiveVillasNodeInput(system, message, input_mapping_vector)
-		
+			powerflow_results = sogno_interface_v2.receiveSognoInput(system, SognoInput, input_mapping_vector)
+						
 			#read measurements from file
 			measurements_set = Measurents_set()
 			
@@ -71,8 +74,14 @@ def on_message(client, userdata, msg):
 			state_estimation_results = DsseCall(system, measurements_set)
 
 			#send results to message broker
-			villasOutput = villas_node_interface.sendVillasNodeOutput(message, output_mapping_vector, powerflow_results, state_estimation_results, scenario_flag)
-			client.publish(topic_publish, villasOutput, 0)
+			SognoOutput = sogno_interface_v2.sendSognoOutput(message, output_mapping_vector, state_estimation_results, scenario_flag)
+			#villasOutput = villas_node_interface.convertSognoOutputToVillasNodeOutput(SognoOutput, output_mapping_vector)
+			#parsed = loads(SognoOutput)
+			#print()
+			#print("--------------------------")
+			#print(dumps(parsed, indent=4))
+			
+			client.publish(topic_publish, SognoOutput, 0)
 			
 			# Finished message
 			print("Finished state estimation for sequence " + str(sequence))
@@ -81,7 +90,7 @@ def on_message(client, userdata, msg):
 			print(e)
 			traceback.print_tb(e.__traceback__)
 			sys.exit()
-
+		
 cwd=getcwd()
 
 #grid files
@@ -97,8 +106,8 @@ meas_configfile2 = abspath(join(cwd, r"./configs/Measurement_config3.json"))
 #read mapping file and create mapping vectors
 input_mapping_file = abspath(join(cwd, r"./configs/villas_node_input_data.conf"))
 output_mapping_file = abspath(join(cwd, r"./configs/villas_node_output_data.conf"))
-input_mapping_vector = villas_node_interface.read_mapping_file(input_mapping_file)
-output_mapping_vector = villas_node_interface.read_mapping_file(output_mapping_file)
+input_mapping_vector = sogno_interface_v2.read_mapping_file(input_mapping_file)
+output_mapping_vector = sogno_interface_v2.read_mapping_file(output_mapping_file)
 
 #load grid
 Sb = 25
