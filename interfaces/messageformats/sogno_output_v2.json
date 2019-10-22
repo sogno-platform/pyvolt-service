@@ -1,6 +1,6 @@
 # Notes: 
-#   - meas_id: must be from CIM file, either nodes (e.g. BUS1) or branches (LINE1)
-#   - timestamp: yyyy-mm-ddThh:mm:ss:msmsms
+#   - comp_id: must be from CIM file, either nodes (e.g. BUS1) or branches (LINE1)
+#   - timestamp: yyyy-mm-ddThh:mm:ss
 #   - type: 
 #        - volt_phsa_abs, volt_phsb_abs, volt_phsc_abs
 #        - volt_phsa_angle, volt_phsb_angle, volt_phsc_angle
@@ -9,10 +9,9 @@
 #        - power_phsa_act, power_phsb_act, power_phsb_act
 #        - power_phsa_react, power_phsb_react, power_phsb_react
 
-{
-    "device": "123456",
-    "meas_id": "BUS1",
-    "timestamp": "2019-04-08T08:44:01:123",
+{    
+    "comp_id": "BUS1",
+    "timestamp": "2019-04-08T08:44:01",
     "data": 123,
     "type": "volt_phsa_abs"
  }
