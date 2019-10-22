@@ -119,9 +119,9 @@ port = 14543
 """
 
 # ACS Message Broker
-broker_address = "137.226.248.91"
-mqtt_username = "villas"
-mqtt_password = "s3c0sim4!"
+broker_address = "sogno-broker"
+mqtt_username = "sogno_user"
+mqtt_password = "sogno_pass"
 port = 1883
 
 mqttc = connect(client_name, mqtt_username, mqtt_password, broker_address, port)
