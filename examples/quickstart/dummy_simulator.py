@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 import time
-import os 
+import os
+import argparse
 
 def connect(client_name, username, password, broker_adress, port=1883):
 	mqttc = mqtt.Client(client_name, True)		   	
@@ -21,6 +22,11 @@ def on_connect(client, userdata, flags, rc):
 		print("connected OK with returned code=", rc)
 	else:
 		print("Bad connection with returned code=", rc)
+
+# argument parsing
+parser = argparse.ArgumentParser()
+parser.add_argument("-q", "--quiet", action="store_true", help="switch off output")
+args = parser.parse_args()
 
 # parameters
 sequence = 1
@@ -54,7 +60,8 @@ with open(data_file) as json_file:
 
 while sequence < len_data + 1:
 	mqttc.publish(topic_publish, data[sequence])
-	print("Sent data for sequence " + str(sequence) + ": " + data[sequence])
+	if not args.quiet:
+		print("Sent data for sequence " + str(sequence) + ": " + data[sequence])
 	sequence += 1
 	time.sleep(1)
 
