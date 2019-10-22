@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 
 EXPOSE 1883
 
-WORKDIR /state-estimation-service/examples/quickstart
+WORKDIR /state-estimation-service/examples/
 
 CMD ["sh", "-c", "sleep 15 &&  python ./dummy_simulator.py"]
 # ENTRYPOINT [ "python", "./examples/quickstart/dummy_simulator.py"]
