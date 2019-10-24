@@ -1,5 +1,6 @@
 from json import dumps, loads
 from datetime import datetime, timedelta
+from acs.state_estimation.measurement import MeasType
 
 import numpy as np
 from acs.state_estimation.results import Results
@@ -25,40 +26,16 @@ def read_mapping_file(mapping_file):
 		
 	return mapping
 
-def receiveSognoInput(system, message, input_mapping_vector):
+def receiveSognoInput(message, pmu_measurements_set):
 	"""
-	to store the received data in an object of type acs.state_estimation.results.Results
+	to store the received data in an object of type acs.state_estimation.measurement
 	
-	@system: model of the system (type acs.state_estimation.network.System)
-	@param message: received message from the server (json.loads(msg.payload)[0])
-	@param input_mapping_vector: according to villas_node_input.json ((result of read_mapping_file))
-	@return powerflow_results: object type acs.state_estimation.results.Results
 	"""
-	data = message['readings']
 
-	#create a results object to store the received data
-	powerflow_results = Results(system)
-
-	#store the received data in powerflow_results
-	for node in powerflow_results.nodes:
-		magnitude = 0.0
-		phase = 0.0
-		uuid = node.topology_node.uuid
-		for elem in data:
-			if elem["id"] == uuid:
-				if elem["measurand"] == "voltage_magnitude":
-					magnitude = elem["data"]
-				elif elem["measurand"] == "voltage_angle":
-					phase = elem["data"]
-			else:
-				continue
-		node.voltage = magnitude * (np.cos(phase) + 1j * np.sin(phase)) / 1000
-		node.voltage_pu = node.voltage / node.topology_node.baseVoltage
-	
-	#calculate quantities I, Iinj, S and Sinj
-	powerflow_results.calculate_all()
-	
-	return powerflow_results
+	msg_dict=loads(message.payload)
+	received_meas_type = msg_dict["type"].split("_")
+	if received_meas_type[0]=="volt" and received_meas_type[1]=="phsa": # TODO - support further types		
+		pmu_measurements_set.update_measurement(msg_dict["meas_id"], MeasType.Vpmu_mag, msg_dict["data"], False)
 
 def sendSognoOutput(client, topic_publish, state_estimation_results):
 	"""
