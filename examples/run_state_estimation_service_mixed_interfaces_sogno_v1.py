@@ -7,7 +7,7 @@ from json import loads, dumps
 import cimpy
 from acs.state_estimation.network import System
 from acs.state_estimation.nv_state_estimator import DsseCall
-from acs.state_estimation.measurement import Measurents_set
+from acs.state_estimation.measurement import MeasurementSet
 
 import sys
 from os import chdir, getcwd
@@ -61,7 +61,7 @@ def on_message(client, userdata, msg):
             powerflow_results = sogno_interface_v1.receiveSognoInput(system, SognoInput, input_mapping_vector)
 
             # read measurements from file
-            measurements_set = Measurents_set()
+            measurements_set = MeasurementSet()
 
             if sequence < 90:
                 measurements_set.read_measurements_from_file(powerflow_results, meas_configfile1)
