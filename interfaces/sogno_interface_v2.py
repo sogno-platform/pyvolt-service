@@ -61,13 +61,31 @@ def sendSognoOutput(client, topic_publish, state_estimation_results):
         SognoOutput["timestamp"] = timestamp_sogno
 
         # publish node voltage magnitude
-        SognoOutput["data"] = np.absolute(node.voltage)
+        SognoOutput["data"] = np.absolute(node.voltage*1e3)
         SognoOutput["type"] = "volt_phsa_abs"
         client.publish(topic_publish, dumps(SognoOutput), 0)
 
         # publish node voltage angle
         SognoOutput["data"] = np.angle(node.voltage)
         SognoOutput["type"] = "volt_phsa_angle"
+        client.publish(topic_publish, dumps(SognoOutput), 0)
+
+    # publish line currents
+    for branch in state_estimation_results.branches:
+        branch_id = branch.topology_branch.uuid
+
+        SognoOutput = {}
+        SognoOutput["comp_id"] = branch_id
+        SognoOutput["timestamp"] = timestamp_sogno
+
+        # publish node voltage magnitude
+        SognoOutput["data"] = np.absolute(branch.current*1e3)
+        SognoOutput["type"] = "curr_phsa_abs"
+        client.publish(topic_publish, dumps(SognoOutput), 0)
+
+        # publish node voltage angle
+        SognoOutput["data"] = np.angle(branch.current)
+        SognoOutput["type"] = "curr_phsa_angle"
         client.publish(topic_publish, dumps(SognoOutput), 0)
 
 
