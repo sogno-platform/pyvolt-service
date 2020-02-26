@@ -15,7 +15,7 @@
 
 {
     "component": "BUS1",
-    "timestamp": "2019-04-08T08:44:01:123",
+    "timestamp": "2019-04-08T08:44:01",
     "readings": [
         {
             "measurand": "voltmagnitude",
