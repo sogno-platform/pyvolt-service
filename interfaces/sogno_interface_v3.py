@@ -22,10 +22,8 @@ def receiveSognoInput(message, measurement_set, phase="A"):
                                     "frequency": None}
 
     for meas in message['readings']:
-        if meas["phase"] == phase and meas['measurand'] == "volt" and meas["component"] in ["_TopologicalNode_85946"]:
-            print(message['device'])
-            print(message['timestamp'])
-            print(meas)
+        if meas['phase'] == phase:
+            print("Received measurement value: {}, {}, {}, {}, {}".format(message['timestamp'], message['device'], meas['measurand'], meas['phase'], meas['data']))
             measurement_set.update_measurement(meas["component"], map_measurand_to_meastype[meas['measurand']], meas['data'], False)
 
 
