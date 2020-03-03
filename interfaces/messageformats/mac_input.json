@@ -1,0 +1,236 @@
+{
+    "identifier": "865374038674019-1",
+    "timestamp": "2020-01-31T14:21:02",
+    "readings": [
+        {
+            "source": "channel_1",
+            "type": "activepower",
+            "data": "198.558"
+        },
+        {
+            "source": "channel_2",
+            "type": "activepower",
+            "data": "124.657"
+        },
+        {
+            "source": "channel_3",
+            "type": "activepower",
+            "data": "134.237"
+        },
+        {
+            "source": "channel_1",
+            "type": "apparentpower",
+            "data": "201.157"
+        },
+        {
+            "source": "channel_2",
+            "type": "apparentpower",
+            "data": "126.649"
+        },
+        {
+            "source": "channel_3",
+            "type": "apparentpower",
+            "data": "147.883"
+        },
+        {
+            "source": "channel_1",
+            "type": "current",
+            "data": "16.078"
+        },
+        {
+            "source": "channel_2",
+            "type": "current",
+            "data": "10.178"
+        },
+        {
+            "source": "channel_3",
+            "type": "current",
+            "data": "11.745"
+        },
+        {
+            "source": "channel_N",
+            "type": "current",
+            "data": "0.000"
+        },
+        {
+            "source": "channel_1",
+            "type": "frequency",
+            "data": "50.000"
+        },
+        {
+            "source": "channel_2",
+            "type": "frequency",
+            "data": "50.010"
+        },
+        {
+            "source": "channel_3",
+            "type": "frequency",
+            "data": "50.010"
+        },
+        {
+            "source": "channel_1",
+            "type": "hi3",
+            "data": "1.357"
+        },
+        {
+            "source": "channel_2",
+            "type": "hi3",
+            "data": "2.291"
+        },
+        {
+            "source": "channel_3",
+            "type": "hi3",
+            "data": "3.439"
+        },
+        {
+            "source": "channel_1",
+            "type": "hi5",
+            "data": "7.294"
+        },
+        {
+            "source": "channel_2",
+            "type": "hi5",
+            "data": "9.323"
+        },
+        {
+            "source": "channel_3",
+            "type": "hi5",
+            "data": "7.131"
+        },
+        {
+            "source": "channel_1",
+            "type": "hi7",
+            "data": "2.413"
+        },
+        {
+            "source": "channel_2",
+            "type": "hi7",
+            "data": "2.632"
+        },
+        {
+            "source": "channel_3",
+            "type": "hi7",
+            "data": "2.135"
+        },
+        {
+            "source": "channel_1",
+            "type": "hv3",
+            "data": "0.126"
+        },
+        {
+            "source": "channel_2",
+            "type": "hv3",
+            "data": "0.129"
+        },
+        {
+            "source": "channel_3",
+            "type": "hv3",
+            "data": "0.044"
+        },
+        {
+            "source": "channel_1",
+            "type": "hv5",
+            "data": "2.379"
+        },
+        {
+            "source": "channel_2",
+            "type": "hv5",
+            "data": "2.739"
+        },
+        {
+            "source": "channel_3",
+            "type": "hv5",
+            "data": "2.162"
+        },
+        {
+            "source": "channel_1",
+            "type": "hv7",
+            "data": "1.312"
+        },
+        {
+            "source": "channel_2",
+            "type": "hv7",
+            "data": "1.177"
+        },
+        {
+            "source": "channel_3",
+            "type": "hv7",
+            "data": "1.073"
+        },
+        {
+            "source": "channel_1",
+            "type": "powerfactor",
+            "data": "-0.987"
+        },
+        {
+            "source": "channel_2",
+            "type": "powerfactor",
+            "data": "0.984"
+        },
+        {
+            "source": "channel_3",
+            "type": "powerfactor",
+            "data": "-0.908"
+        },
+        {
+            "source": "channel_1",
+            "type": "reactivepower",
+            "data": "32.231"
+        },
+        {
+            "source": "channel_2",
+            "type": "reactivepower",
+            "data": "22.374"
+        },
+        {
+            "source": "channel_3",
+            "type": "reactivepower",
+            "data": "62.047"
+        },
+        {
+            "source": "channel_1",
+            "type": "thdi",
+            "data": "7.841"
+        },
+        {
+            "source": "channel_2",
+            "type": "thdi",
+            "data": "10.209"
+        },
+        {
+            "source": "channel_3",
+            "type": "thdi",
+            "data": "8.081"
+        },
+        {
+            "source": "channel_1",
+            "type": "thdv",
+            "data": "2.777"
+        },
+        {
+            "source": "channel_2",
+            "type": "thdv",
+            "data": "2.886"
+        },
+        {
+            "source": "channel_3",
+            "type": "thdv",
+            "data": "2.462"
+        },
+        {
+            "source": "channel_1",
+            "type": "volt",
+            "data": "12493.896"
+        },
+        {
+            "source": "channel_2",
+            "type": "volt",
+            "data": "12426.734"
+        },
+        {
+            "source": "channel_3",
+            "type": "volt",
+            "data": "12573.438"
+        }
+    ]
+}
