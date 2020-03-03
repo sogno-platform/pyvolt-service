@@ -6,7 +6,7 @@ import numpy as np
 from acs.state_estimation.results import Results
 
 
-def receiveSognoInput(message, measurement_set, phase="A"):
+def receiveSognoInput(message, measurement_set, phase='A'):
     """
     to store the received data in an object of type acs.state_estimation.measurement
 
@@ -21,13 +21,14 @@ def receiveSognoInput(message, measurement_set, phase="A"):
                                     "apparentpower": None,
                                     "frequency": None}
 
-    for meas in message['readings']:
-        if meas['phase'] == phase:
-            print("Received measurement value: {}, {}, {}, {}, {}".format(message['timestamp'], message['device'], meas['measurand'], meas['phase'], meas['data']))
-            measurement_set.update_measurement(meas["component"], map_measurand_to_meastype[meas['measurand']], meas['data'], False)
+    print("SOGNO interface:")
+    for reading in message['readings']:
+        if reading['phase'] == phase:
+            print("Received measurement value: {}, {}, {}, {}, {}".format(message['timestamp'], message['device'], reading['measurand'], reading['phase'], reading['data']))
+            measurement_set.update_measurement(reading["component"], map_measurand_to_meastype[reading['measurand']], reading['data'], False)
 
 
-def sendSognoOutput(client, topic_publish, state_estimation_results, phase="A"):
+def sendSognoOutput(client, topic_publish, state_estimation_results, phase='A'):
     """
     to create the payload according to "sogno_output.json"
     @param client: MQTT client instance to be used for publishing
@@ -49,6 +50,8 @@ def sendSognoOutput(client, topic_publish, state_estimation_results, phase="A"):
         SognoOutput["readings"] = []
               
         # add node voltage magnitude
+        # including conversion from SE value in phase-to-phase and kW
+        # to SOGNO value in phase-to-ground and W
         read_elem = {}
         read_elem["measurand"] = "voltmagnitude"
         read_elem["phase"] = phase
@@ -64,21 +67,3 @@ def sendSognoOutput(client, topic_publish, state_estimation_results, phase="A"):
 
         # publish message
         client.publish(topic_publish, dumps(SognoOutput), 0)
-
-    # # publish line currents
-    # for branch in state_estimation_results.branches:
-    #     branch_id = branch.topology_branch.uuid
-
-    #     SognoOutput = {}
-    #     SognoOutput["comp_id"] = branch_id
-    #     SognoOutput["timestamp"] = timestamp_sogno
-
-    #     # publish node voltage magnitude
-    #     SognoOutput["data"] = np.absolute(branch.current*1e3)
-    #     SognoOutput["type"] = "curr_phs" + phase.lower() + "_abs"
-    #     client.publish(topic_publish, dumps(SognoOutput), 0)
-
-    #     # publish node voltage angle
-    #     SognoOutput["data"] = np.angle(branch.current)
-    #     SognoOutput["type"] = "curr_phs" + phase.lower() + "_angle"
-    #     client.publish(topic_publish, dumps(SognoOutput), 0)
