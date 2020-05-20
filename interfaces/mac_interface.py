@@ -1,12 +1,12 @@
-# Mapping rules:
+# --- Converts MAC devices messages to SOGNO interface v3 messages
 #
-# MAC -> SOGNOv2
-#
+# Conversion rules:
 # identifier -> device
 # identifier_to_cim_comp.conf -> meas_id
 # timestamp + 000 as msmsms -> timestamp
 # data as string -> data as float
 # type + source + -> type
+
 from json import dumps, loads
 import numpy as np
 

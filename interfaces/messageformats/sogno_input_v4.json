@@ -1,0 +1,34 @@
+# Notes: 
+#   - device: ID for measurement device
+#   - timestamp: yyyy-mm-ddThh:mm:ss.usususususus(+/-)HH:MM (date in ISO 8601 format)
+#   - component: ID (uuid) from CIM document
+#   - measurand: ["voltmagnitude","voltangle","currmagnitude","currangle","activepower","reactivepower","apparentpower","frequency"]
+#   - phase: ["A","B","C"]
+#   - data: measurement value as in the following format:
+#           - voltmagnitude: phase-to-ground RMS value, unit volts
+#           - voltangle: unit degree
+#           - currmagnitude: RMS value, unit ampere
+#           - currangle: unit degree
+#           - activepower: single phase power, unit watts
+#           - reactivepower: single phase power, unit voltampere reactive
+#           - apparentpower: single phase power, unit voltampere
+#           - frequency: unit hertz
+
+{
+    "device": "device1",
+    "timestamp": "2020-05-20T10:27:57.980802+00:00",
+    "readings": [
+        {
+            "component": "BUS1",
+            "measurand": "voltmagnitude",
+            "phase": "A",
+            "data": 123
+        },
+        {
+            "component": "BUS2",
+            "measurand": "voltmagnitude",
+            "phase": "A",
+            "data": 123
+        }
+    ]
+ }
