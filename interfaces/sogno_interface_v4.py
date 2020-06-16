@@ -32,7 +32,7 @@ def sendSognoOutput(client, topic_publish, state_estimation_results, phase='A'):
     """
     Creates the payload according to sogno_output_v4.json
     Includes magnitude conversion from SE voltage in phase-to-phase to SOGNO value in phase-to-ground
-    Incldues unit conversion from SE results in kV, kA and kW to SOGNO value in V, A and W
+    Incldues unit conversion from SE results in kV, kA and MW to SOGNO value in V, A and W
     @param client: MQTT client instance to be used for publishing
     @param topic_publish: topic used for publishing
     @param state_estimation_results: results of state_estimation (type acs.state_estimation.results.Results)
@@ -68,14 +68,14 @@ def sendSognoOutput(client, topic_publish, state_estimation_results, phase='A'):
         read_elem = {}
         read_elem["measurand"] = "activepower"
         read_elem["phase"] = phase
-        read_elem["data"] = np.real(node.power)*1e3
+        read_elem["data"] = np.real(node.power)*1e6
         SognoOutput["readings"].append(read_elem)
 
         # add node reactive power 
         read_elem = {}
         read_elem["measurand"] = "reactivepower"
         read_elem["phase"] = phase
-        read_elem["data"] = np.imag(node.power)*1e3
+        read_elem["data"] = np.imag(node.power)*1e6
         SognoOutput["readings"].append(read_elem)
 
         # publish message
