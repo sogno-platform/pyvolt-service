@@ -40,7 +40,7 @@ def receiveSognoInput(message, pmu_measurements_set):
         pmu_measurements_set.update_measurement(msg_dict["meas_id"], MeasType.Vpmu_mag, msg_dict["data"], False)
 
 
-def sendSognoOutput(client, topic_publish, state_estimation_results):
+def sendSognoOutput(client, topic_publish, state_estimation_results, phase="A"):
     """
     to create the payload according to "sogno_output.json"
     @param client: MQTT client instance to be used for publishing
@@ -62,12 +62,12 @@ def sendSognoOutput(client, topic_publish, state_estimation_results):
 
         # publish node voltage magnitude
         SognoOutput["data"] = np.absolute(node.voltage*1e3)
-        SognoOutput["type"] = "volt_phsa_abs"
+        SognoOutput["type"] = "volt_phs" + phase.lower() + "_abs"
         client.publish(topic_publish, dumps(SognoOutput), 0)
 
         # publish node voltage angle
         SognoOutput["data"] = np.angle(node.voltage)
-        SognoOutput["type"] = "volt_phsa_angle"
+        SognoOutput["type"] = "volt_phs" + phase.lower() + "_angle"
         client.publish(topic_publish, dumps(SognoOutput), 0)
 
     # publish line currents
@@ -80,12 +80,12 @@ def sendSognoOutput(client, topic_publish, state_estimation_results):
 
         # publish node voltage magnitude
         SognoOutput["data"] = np.absolute(branch.current*1e3)
-        SognoOutput["type"] = "curr_phsa_abs"
+        SognoOutput["type"] = "curr_phs" + phase.lower() + "_abs"
         client.publish(topic_publish, dumps(SognoOutput), 0)
 
         # publish node voltage angle
         SognoOutput["data"] = np.angle(branch.current)
-        SognoOutput["type"] = "curr_phsa_angle"
+        SognoOutput["type"] = "curr_phs" + phase.lower() + "_angle"
         client.publish(topic_publish, dumps(SognoOutput), 0)
 
 
