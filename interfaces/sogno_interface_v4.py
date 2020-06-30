@@ -1,14 +1,14 @@
 from json import dumps, loads
 from datetime import datetime, timedelta, timezone
-from acs.state_estimation.measurement import MeasType
+from pyvolt.measurement import MeasType
 
 import numpy as np
-from acs.state_estimation.results import Results
+from pyvolt.results import Results
 
 
 def receiveSognoInput(message, measurement_set, phase='A'):
     """
-    to store the received data in an object of type acs.state_estimation.measurement
+    to store the received data in an object of type pyvolt.measurement
 
     """
 
@@ -35,7 +35,7 @@ def sendSognoOutput(client, topic_publish, state_estimation_results, phase='A'):
     Incldues unit conversion from SE results in kV, kA and MW to SOGNO value in V, A and W
     @param client: MQTT client instance to be used for publishing
     @param topic_publish: topic used for publishing
-    @param state_estimation_results: results of state_estimation (type acs.state_estimation.results.Results)
+    @param state_estimation_results: results of state_estimation (type pyvolt.results.Results)
     """
 
     # create current timestamp in ISO 8601 format
