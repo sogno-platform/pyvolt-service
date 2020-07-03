@@ -24,7 +24,7 @@ def receiveSognoInput(message, measurement_set, phase='A'):
     print("SOGNO interface:")
     for reading in message['readings']:
         if reading['phase'] == phase:
-            print("Received measurement value: {}, {}, {}, {}, {}".format(message['timestamp'], message['device'], reading['measurand'], reading['phase'], reading['data']))
+            print("Received measurement value: {}, {}, {}, {}, {}, {}".format(message['timestamp'], message['device'], reading["component"], reading['measurand'], reading['phase'], reading['data']))
             measurement_set.update_measurement(reading["component"], map_measurand_to_meastype[reading['measurand']], reading['data'], False)
 
 

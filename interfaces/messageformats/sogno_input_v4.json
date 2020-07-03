@@ -6,9 +6,9 @@
 #   - phase: ["A","B","C"]
 #   - data: measurement value as in the following format:
 #           - voltmagnitude: phase-to-ground RMS value, unit volts
-#           - voltangle: unit degree
+#           - voltangle: unit radian
 #           - currmagnitude: RMS value, unit ampere
-#           - currangle: unit degree
+#           - currangle: unit radian
 #           - activepower: single phase power, unit watts
 #           - reactivepower: single phase power, unit voltampere reactive
 #           - apparentpower: single phase power, unit voltampere
