@@ -1,0 +1,4 @@
+I, Marco Pau hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: mpau@eonerc.rwth-aachen.de
+
+c0bf41d12e852e7cfe5d7e23ffbcfeac6b74c556 Update sogno_input_data_acs.conf
+f56fe276c0f08919ceb5503219e835e74497fa9a add support of power injection measurements
