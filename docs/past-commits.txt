@@ -91,3 +91,8 @@ e1ef5e6b1b1628ed97e52ec03ff79528bb4851e4 add submodule cim-grid-data
 1c9f780f63e0796d799bc51fa4cfbf5584bf2e4a add submodule cimpy
 93a0ce58b4a1956d14e5b54f7aa51a66374d8591 add submodule state-estimation
 2d64e31771494f5a4c202636f3205fe2df824c13 initial commit
+
+I, Marco Pau hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: mpau@eonerc.rwth-aachen.de
+
+c0bf41d12e852e7cfe5d7e23ffbcfeac6b74c556 Update sogno_input_data_acs.conf
+f56fe276c0f08919ceb5503219e835e74497fa9a add support of power injection measurements
