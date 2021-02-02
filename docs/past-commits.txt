@@ -1,0 +1,7 @@
+I, Markus Mirz hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: 16180422+m-mirz@users.noreply.github.com
+
+027af26b3df7ce585f56f7af108d27312fb3f84f Update LICENSE
+8482391ed255e8c4cf3ad42919052fb4c6c2dddf Update .gitmodules
+1f78ee7b1ee9f198ebac469544a38367e848da13 Update .gitmodules
+29c6b10079ea111e67290b8707beecb3869cf5f8 Add LICENSE
+18306f9cec29089886bb3797f821aaede9834c88 Update .gitmodules
