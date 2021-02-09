@@ -1,24 +1,17 @@
 FROM python:3.7
 
-LABEL name=state-estimation-service
+LABEL name=pyvolt-service
 LABEL version=1.0
-LABEL description='state-estimation-service'
-LABEL maintainer='Jan Dinkelbach'
-LABEL maintainer_email='jdinkelbach@eonerc.rwth-aachen.de'
+LABEL description='pyvolt-service'
+LABEL maintainer_email='acs-software@eonerc.rwth-aachen.de'
 
-ADD . /state-estimation-service
-WORKDIR /state-estimation-service
+RUN pip3 install paho-mqtt==1.4.0
+RUN pip3 install git+https://github.com/cim-iec/cimpy.git
+RUN pip3 install git+https://github.com/RWTH-ACS/pyvolt.git
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+ADD . /se
+WORKDIR /se
 
-WORKDIR /state-estimation-service/state-estimation
-RUN pip install -r requirements.txt
-RUN python setup.py develop
+RUN git clone https://github.com/RWTH-ACS/pyvolt.git
 
-WORKDIR /state-estimation-service/state-estimation/dependencies/cimpy
-RUN python setup.py develop
-
-WORKDIR /state-estimation-service
-
-ENTRYPOINT [ "python", "./examples/quickstart/run_state_estimation_service_villas_interface.py"]
+#ENTRYPOINT [ "python", "./examples/quickstart/run_state_estimation_service_villas_interface.py"]
