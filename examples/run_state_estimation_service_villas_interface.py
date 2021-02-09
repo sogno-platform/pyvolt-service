@@ -5,9 +5,9 @@ import traceback
 from json import loads
 
 import cimpy
-from acs.state_estimation.network import System
-from acs.state_estimation.nv_state_estimator import DsseCall
-from acs.state_estimation.measurement import MeasurementSet
+from pyvolt.network import System
+from pyvolt.nv_state_estimator import DsseCall
+from pyvolt.measurement import MeasurementSet
 
 import sys
 from os import chdir, getcwd
