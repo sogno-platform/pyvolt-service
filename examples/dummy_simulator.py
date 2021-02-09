@@ -4,11 +4,10 @@ import os
 import argparse
 
 
-def connect(client_name, username, password, broker_adress, port=1883):
+def connect(client_name, broker_adress, port=1883):
     mqttc = mqtt.Client(client_name, True)
-    mqttc.username_pw_set(username, password)
+    #mqttc.username_pw_set(username, password)
     mqttc.on_connect = on_connect  # attach function to callback
-    # mqttc.on_message = on_message					#attach function to callback
     mqttc.connect(broker_adress, port)  # connect to broker
     mqttc.loop_start()  # start loop to process callback
     time.sleep(4)  # wait for connection setup to complete
@@ -34,27 +33,17 @@ args = parser.parse_args()
 # parameters
 sequence = 1
 len_data = 300
-client_name = "DpsimDummy"
-topic_publish = "dpsim-powerflow"
-
-# Public Message Broker
-"""
-broker_address = "m16.cloudmqtt.com"
-mqtt_username = "ilgtdaqk"
-mqtt_password = "UbNQQjmcUdqq"
-port = 14543
-"""
+client_name = "dummy-simulator"
+topic_publish = "/dpsim-powerflow"
 
 # ACS Message Broker
-broker_address = "127.0.0.1"
-mqtt_username = "sogno_user"
-mqtt_password = "sogno_pass"
+broker_address = "172.17.0.1"
 port = 1883
 
 os.chdir(os.path.dirname(__file__))
 print(os.getcwd())
 
-mqttc = connect(client_name, mqtt_username, mqtt_password, broker_address, port)
+mqttc = connect(client_name, broker_address, port)
 
 data_file = r"./sample_data/dpsim_powerflow_record_cigre.txt"
 data = []
@@ -69,5 +58,5 @@ while sequence < len_data + 1:
     sequence += 1
     time.sleep(1)
 
-mqttc.loop_stop()  # Stop loop
-mqttc.disconnect()  # disconnect
+mqttc.loop_stop()
+mqttc.disconnect()
