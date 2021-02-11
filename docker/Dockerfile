@@ -14,4 +14,4 @@ WORKDIR /se
 
 RUN git clone https://github.com/RWTH-ACS/pyvolt.git
 
-#ENTRYPOINT [ "python", "./examples/quickstart/run_state_estimation_service_villas_interface.py"]
+CMD [ "python", "./examples/run_state_estimation_service_villas_interface.py"]
