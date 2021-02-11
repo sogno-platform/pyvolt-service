@@ -2,7 +2,7 @@ from json import dumps, loads
 from datetime import datetime
 
 import numpy as np
-from acs.state_estimation.results import Results
+from pyvolt.results import Results
 
 
 def read_mapping_file(mapping_file):
@@ -77,7 +77,12 @@ def sendVillasNodeOutput(message, output_mapping_vector, powerflow_results, stat
     VillasNodeOutput = {}
     VillasNodeOutput["ts"] = {}
     VillasNodeOutput["ts"]["origin"] = message["ts"]["origin"]
-    VillasNodeOutput["sequence"] = message["sequence"]
+
+    if "sequence" in message:
+        VillasNodeOutput["sequence"] = message["sequence"]
+    else:
+        print('Sequence no. not available.')
+        VillasNodeOutput["sequence"] = 1    
 
     # calculate Vmag_err
     Vmag_err = np.zeros(len(powerflow_results.nodes))

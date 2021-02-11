@@ -5,9 +5,10 @@ import traceback
 from json import loads
 
 import cimpy
-from pyvolt.network import System
-from pyvolt.nv_state_estimator import DsseCall
-from pyvolt.measurement import MeasurementSet
+from pyvolt import network
+from pyvolt import nv_state_estimator
+from pyvolt import results
+from pyvolt import measurement
 
 import sys
 from os import chdir, getcwd
@@ -21,9 +22,9 @@ from interfaces import villas_node_interface
 logging.basicConfig(filename='recv_client.log', level=logging.INFO, filemode='w')
 
 
-def connect(client_name, username, password, broker_adress, port=1883):
+def connect(client_name, broker_adress, port=1883):
     mqttc = mqtt.Client(client_name, True)
-    mqttc.username_pw_set(username, password)
+    #mqttc.username_pw_set(username, password)
     mqttc.on_connect = on_connect  # attach function to callback
     mqttc.on_message = on_message  # attach function to callback
     mqttc.connect(broker_adress, port)  # connect to broker
@@ -50,15 +51,20 @@ def on_message(client, userdata, msg):
     """
 
     message = loads(msg.payload)[0]
-    sequence = message['sequence']
 
+    if "sequence" in message:
+        sequence = message['sequence']
+    else:
+        print('Sequence no. not available.')
+        sequence = 1        
+    
     if sequence > 0:
         try:
             # store the received data in powerflow_results
             powerflow_results = villas_node_interface.receiveVillasNodeInput(system, message, input_mapping_vector)
 
             # read measurements from file
-            measurements_set = MeasurementSet()
+            measurements_set = measurement.MeasurementSet()
 
             if sequence < 90:
                 measurements_set.read_measurements_from_file(powerflow_results, meas_configfile1)
@@ -70,7 +76,7 @@ def on_message(client, userdata, msg):
             # calculate the measured values (affected by uncertainty)
             measurements_set.meas_creation(dist="uniform", seed=sequence)
             # Performs state estimation
-            state_estimation_results = DsseCall(system, measurements_set)
+            state_estimation_results = nv_state_estimator.DsseCall(system, measurements_set)
 
             # send results to message broker
             villasOutput = villas_node_interface.sendVillasNodeOutput(message, output_mapping_vector, powerflow_results,
@@ -90,9 +96,9 @@ cwd = getcwd()
 
 # grid files
 xml_files = [
-    abspath(join(cwd, r"../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_EQ.xml")),
-    abspath(join(cwd, r"../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_SV.xml")),
-    abspath(join(cwd, r"../state-estimation/examples/quickstart/sample_data/Rootnet_FULL_NE_06J16h_TP.xml"))]
+    abspath(join(cwd, r"../pyvolt/examples/quickstart/sample_data/CIGRE-MV-NoTap/Rootnet_FULL_NE_06J16h_EQ.xml")),
+    abspath(join(cwd, r"../pyvolt/examples/quickstart/sample_data/CIGRE-MV-NoTap/Rootnet_FULL_NE_06J16h_SV.xml")),
+    abspath(join(cwd, r"../pyvolt/examples/quickstart/sample_data/CIGRE-MV-NoTap/Rootnet_FULL_NE_06J16h_TP.xml"))]
 
 # measurements files
 meas_configfile1 = abspath(join(cwd, r"./configs/Measurement_config2.json"))
@@ -106,36 +112,22 @@ output_mapping_vector = villas_node_interface.read_mapping_file(output_mapping_f
 
 # load grid
 Sb = 25
-res = cimpy.cimread(xml_files)
-system = System()
-system.load_cim_data(res, Sb)
+res = cimpy.cim_import(xml_files, "cgmes_v2_4_15")
+system = network.System()
+system.load_cim_data(res['topology'], Sb)
 
 client_name = "SognoDemo_Client"
-topic_subscribe = "dpsim-powerflow"
-topic_publish = "sogno-estimator"
-
-"""
-# Public Message Broker
-broker_address = "m16.cloudmqtt.com"
-mqtt_username = "ilgtdaqk"
-mqtt_password = "UbNQQjmcUdqq"
-port = 14543
-
-# ACS Message Broker
-broker_address = "137.226.248.91"
-mqtt_username = "villas"
-mqtt_password = "s3c0sim4!"
-port = 1883
-"""
+topic_subscribe = "/dpsim-powerflow"
+topic_publish = "/se"
 
 # Local SOGNO platform broker
-broker_address = "127.0.0.1"
-mqtt_username = "sogno_user"
-mqtt_password = "sogno_pass"
+broker_address = "172.17.0.1"
 port = 1883
 
-mqttc = connect(client_name, mqtt_username, mqtt_password, broker_address, port)
+mqttc = connect(client_name, broker_address, port)
+
+sequence = 0
 
 input("Press enter to stop client...\n")
-mqttc.loop_stop()  # Stop loop
-mqttc.disconnect()  # disconnect
+mqttc.loop_stop()
+mqttc.disconnect()
