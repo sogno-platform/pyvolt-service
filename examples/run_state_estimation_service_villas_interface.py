@@ -13,6 +13,7 @@ from pyvolt import measurement
 import sys
 from os import chdir, getcwd
 from os.path import abspath, dirname, join
+from os import getenv, environ
 
 chdir(dirname(__file__))
 
@@ -24,7 +25,8 @@ logging.basicConfig(filename='recv_client.log', level=logging.INFO, filemode='w'
 
 def connect(client_name, broker_adress, port=1883):
     mqttc = mqtt.Client(client_name, True)
-    #mqttc.username_pw_set(username, password)
+    if 'MQTT_USER' in environ:
+      mqttc.username_pw_set(getenv('MQTT_USER'), getenv('MQTT_PWD'))
     mqttc.on_connect = on_connect  # attach function to callback
     mqttc.on_message = on_message  # attach function to callback
     mqttc.connect(broker_adress, port)  # connect to broker
@@ -121,8 +123,8 @@ topic_subscribe = "/dpsim-powerflow"
 topic_publish = "/se"
 
 # Local SOGNO platform broker
-broker_address = "172.17.0.1"
-port = 1883
+broker_address = getenv('MQTT_BROKER', 'localhost')
+port = int(getenv('MQTT_PORT','1883'))
 
 mqttc = connect(client_name, broker_address, port)
 
