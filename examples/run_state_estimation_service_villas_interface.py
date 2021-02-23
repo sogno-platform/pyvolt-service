@@ -130,6 +130,18 @@ mqttc = connect(client_name, broker_address, port)
 
 sequence = 0
 
-input("Press enter to stop client...\n")
-mqttc.loop_stop()
-mqttc.disconnect()
+print("Press CTRL+C to stop client...")
+
+mqttc.publish("/debug", "SE started")
+
+try:
+    while 1:
+        time.sleep(1)
+        # ensure debug ouput gets flushed
+        sys.stdout.flush()
+
+except KeyboardInterrupt:
+    print('Exiting...')
+    mqttc.loop_stop()
+    mqttc.disconnect()
+    sys.exit(0)
