@@ -98,9 +98,9 @@ cwd = getcwd()
 
 # grid files
 xml_files = [
-    abspath(join(cwd, r"../pyvolt/examples/quickstart/sample_data/CIGRE-MV-NoTap/Rootnet_FULL_NE_06J16h_EQ.xml")),
-    abspath(join(cwd, r"../pyvolt/examples/quickstart/sample_data/CIGRE-MV-NoTap/Rootnet_FULL_NE_06J16h_SV.xml")),
-    abspath(join(cwd, r"../pyvolt/examples/quickstart/sample_data/CIGRE-MV-NoTap/Rootnet_FULL_NE_06J16h_TP.xml"))]
+    abspath(join(cwd, r"../pyvolt/examples/sample_data/CIGRE-MV-NoTap/Rootnet_FULL_NE_06J16h_EQ.xml")),
+    abspath(join(cwd, r"../pyvolt/examples/sample_data/CIGRE-MV-NoTap/Rootnet_FULL_NE_06J16h_SV.xml")),
+    abspath(join(cwd, r"../pyvolt/examples/sample_data/CIGRE-MV-NoTap/Rootnet_FULL_NE_06J16h_TP.xml"))]
 
 # measurements files
 meas_configfile1 = abspath(join(cwd, r"./configs/Measurement_config2.json"))
