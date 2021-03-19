@@ -34,7 +34,7 @@
 		},
 	"Vpmu":{
 		"uuid":["N0","N7","N6","N14","N11"],
-		"unc_mag":2,
+		"unc_mag":0.2,
 		"unc_phase":0
 		},
 	"Ipmu":{
